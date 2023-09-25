@@ -12,25 +12,15 @@ function App() {
   let [logo, setLogo] = useState('React Blog');
   let [title, setTitle] = useState('스테이트 사용 방법');
   let [title2, setTitle2] = useState(['리액트 사용 방법', '테스트 사용 방법', '인터넷 사용 방법']);
+  let [modal, setModal] = useState(false);
+  let [like, setLike] = useState([0, 0, 0]);
 
-  let num = [1, 2];
-  let a = num[0]; // a = 1
-  let c = num[1]; // c = 2
-  let [aa, cc] = [1, 2]; // aa = 1, cc = 2  
 
-  let [like, setLike] = useState(0);
-
-  // 여기서 새로 정의하는게 아니라 span 안에서 arrow 함수로 써도 됨 
-  function func_like() {
-    setLike(like + 1)
-  }
 
   function change_title() {
     setTitle('좋아요ㅎㅎ')
   }
 
-
-  let [modal, setModal] = useState(false);
 
 
 
@@ -42,16 +32,10 @@ function App() {
       <h4 style={{ color: 'red', fontSize: '16px' }}> {post} </h4>
       <button onClick={change_title} >스테이트 글 변경</button>
       <button onClick={() => {
-        // array와 object를 다룰 때는 원본을 보존해두고 수정하자 !
-        // let copy_title2 = title2; // 이건 안됨
-        // 이유
-        // 1. 기존과 최근의 state가 같으면 변경 안 해줌
-        // 2. copy_title2이 가리키고 있던 그 안에 내용이 바뀐거지 이 copy_title2이라는 
-        // 변수 자체의 값(가르키고 있는 주소 값)이 변한게 아니라서 같다고 판단하는 것
-        // 3. console.log(copy_title2 = title2); 같다고 나옴
-        let copy_title2 = [...title2]; // 이렇게 shallow copy 하면 됨
+        let copy_title2 = [...title2];
         copy_title2[0] = 'test1 method';
         setTitle2(copy_title2);
+        // console.log(title2[0]);
       }} >테스트 글 변경</button>
 
       <button onClick={() => {
@@ -59,29 +43,21 @@ function App() {
         setTitle2(copy2_title2.sort());
       }} >가나다순으로 변경</button>
 
-      <div className="list">
-        <h4>{post}</h4>
-        <p>09월 24일 발행</p>
-      </div>
-      <div className="list">
-        <h4>{title} <span onClick={func_like}>👍</span> {like}</h4>
-        <p>09월 24일 발행</p>
-      </div>
-      <div className="list">
-        <h4 onClick={() => {
-          setModal(!modal);
-          // modal == true ? setModal(false) : setModal(true); // 이게 내가한건데 위가 더 간단함
-        }} >{title2[0]}</h4>
-        <p>09월 24일 발행</p>
-      </div>
-      <div className="list">
-        <h4>{title2[1]}</h4>
-        <p>09월 24일 발행</p>
-      </div>
-      <div className="list">
-        <h4>{title2[2]}</h4>
-        <p>09월 24일 발행</p>
-      </div>
+      {
+        title2.map(function (title_name, i) {
+          return (
+            <div className="list" key={i}>
+              <h4>{title2[i]} <span onClick={() => {
+                let copy_like = [...like];
+                copy_like[i] += 1;
+                setLike(copy_like);
+              }}>👍</span> {like[i]} </h4>
+              <p>09월 25일 발행</p>
+            </div>
+          )
+        })
+      }
+
 
       {
         modal == true ? <Modal /> : null
@@ -89,6 +65,7 @@ function App() {
 
       {/* <Modal></Modal> */}
       {/* <Modal/>  이것도 가능 */}
+
 
     </div>
   );
